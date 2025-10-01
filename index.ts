@@ -6,7 +6,7 @@ import { loadSchema } from "./schema"
 import express, { type Request, type Response } from "express";
 import cookieParser from "cookie-parser";
 import path from 'node:path';
-import router from './server';
+import router from './server/server';
 import { memoryStore } from './lib/memoryStore';
 import { lucia } from './lib/lucia';
 import prisma from './lib/prisma';

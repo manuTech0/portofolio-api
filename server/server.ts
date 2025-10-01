@@ -1,14 +1,14 @@
 import { Router } from "express";
-import { lucia } from "./lib/lucia";
+import { lucia } from "../lib/lucia";
 import type { Request, Response } from "express";
 import { parseCookies, serializeCookie } from "lucia/dist/cookie";
-import { logger } from "./lib/logger";
-import prisma from "./lib/prisma";
+import { logger } from "../lib/logger";
+import prisma from "../lib/prisma";
 import { nanoid } from "nanoid";
 import { GitHub, Google, generateState, generateCodeVerifier, OAuth2RequestError } from "arctic";
-import type { GithubEmail, GitHubUser, GoogleUser } from "./lib/types";
+import type { GithubEmail, GitHubUser, GoogleUser } from "../lib/types";
 import { ZodError } from "zod";
-import { loginSchema, SignUpSchema } from "./lib/zodSchema";
+import { loginSchema, SignUpSchema } from "../lib/zodSchema";
 
 const router = Router()
 
