@@ -1,0 +1,32 @@
+import typescript from "rollup-plugin-typescript2";
+import resolve from "@rollup/plugin-node-resolve";
+import commonjs from "@rollup/plugin-commonjs";
+import json from "@rollup/plugin-json";
+import copy from "rollup-plugin-copy"
+
+export default {
+    input: "index.ts",
+    output: { 
+        dir: "dist/", 
+        format: "esm", 
+        sourcemap: true,
+        preserveModules: true
+    },
+    plugins: [
+        commonjs(),
+        resolve({ 
+            preferBuiltins: true,
+        }),
+        json(),
+        typescript({ 
+            tsconfig: "./tsconfig.json",
+            useTsconfigDeclarationDir: true
+        }),
+        copy({
+            targets: [
+                { src: "public/", dest: "dist/" }
+            ]
+        })
+    ],
+    external: ["fs","path","crypto", "@pothos/core", "@prisma/client", "winston", "graphql", "isomorphic-dompurify"]
+}

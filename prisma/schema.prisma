@@ -1,0 +1,82 @@
+generator client {
+  provider = "prisma-client-js"
+  output   = "../lib/generated/prisma"
+}
+
+generator pothos {
+  provider     = "prisma-pothos-types"
+  output       = "../lib/generated/pothos-prisma.ts"
+  clientOutput = "./prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Users {
+  userId     String      @id @default(cuid())
+  username   String?     @unique
+  fullname   String
+  email      String      @unique
+  password   String?
+  verified   Boolean     @default(false)
+  role       UsersRoles   @default(user)
+  profilePicture  String?
+  status     UserStatus?  
+  createdAt  DateTime    @default(now())
+  updateAt   DateTime    @updatedAt
+  provider   String?
+  providerId String?     @unique
+  posts      Posts[]
+  session    Session[]
+  todos      Todos?
+
+  @@index([fullname, username, email])
+}
+
+model Posts {
+  postId    String     @id @default(cuid())
+  title     String     @unique
+  content   String
+  userId    String
+  status    PostStatus
+  createdAt DateTime   @default(now())
+  updateAt  DateTime   @updatedAt
+  slug      String     @unique
+  user      Users      @relation(fields: [userId], references: [userId], onDelete: Cascade)
+
+  @@index([title, content, slug])
+}
+
+model Session {
+  id        String   @id @default(cuid())
+  userId    String
+  expiresAt DateTime
+  user      Users    @relation(fields: [userId], references: [userId], onDelete: Cascade)
+}
+
+model Todos {
+  todosId String         @id       @default(cuid())
+  userId  String      @unique
+  user    Users       @relation(fields: [userId], references: [userId], onDelete: Cascade)
+  data    String
+}
+
+enum PostStatus {
+  public
+  private
+  deleted
+  draft
+}
+
+enum UserStatus {
+  deleted
+  banded
+}
+
+enum UsersRoles {
+  user
+  admin
+  superuser
+}
