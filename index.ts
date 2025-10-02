@@ -184,5 +184,3 @@ app.get("/generate-token", async (req: Request, res: Response) => {
 app.listen(process.env.PORT ?? 4000, (p) => {
     logger.info(`API listening in *:${process.env.PORT ?? 4000}`)
 })
-
-export default app
