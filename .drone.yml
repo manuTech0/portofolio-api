@@ -1,20 +1,17 @@
-kind: pipeline
-type: docker
-name: default
-
 steps:
-  - name: install dependencies
-    image: oven/bun:latest
-    commands:
-      - bun install
-
   - name: build docker image
-    image: docker
+    image: docker:20.10
     environment:
       DATABASE_URL:
         from_secret: DATABASE_URL
+    volumes:
+      - name: docker-sock
+        path: /var/run/docker.sock
     commands:
       - docker build -t my-web-app:${DRONE_BUILD_NUMBER} .
-
       - mkdir -p /drone/apps/projects
       - docker save my-web-app:${DRONE_BUILD_NUMBER} -o /drone/apps/projects/my-web-app-${DRONE_BUILD_NUMBER}.tar
+
+volumes:
+  - name: docker-sock
+    path: /var/run/docker.sock
