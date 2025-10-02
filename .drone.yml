@@ -53,7 +53,7 @@ steps:
       # Jalankan container baru
       - docker run -d \
           --name my-web-app \
-          -p 3000:3000 \
+          -p 8000:3000 \
           -e DATABASE_URL=$DATABASE_URL \
           -e GOOGLE_CLIENT_ID=$GOOGLE_CLIENT_ID \
           -e GOOGLE_CLIENT_SECRET=$GOOGLE_CLIENT_SECRET \
