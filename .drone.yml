@@ -3,11 +3,6 @@ type: docker
 name: default
 
 steps:
-  - name: install dependencies
-    image: oven/bun:latest
-    commands:
-      - bun install
-
   - name: build and run
     image: docker
     environment:
@@ -21,13 +16,13 @@ steps:
       - docker build -t my-web-app:${DRONE_BUILD_NUMBER} .
       - docker stop my-web-app || true
       - docker rm my-web-app || true
-      - docker run -d --name my-web-app --env-file .env -p 8000:3000 my-web-app:${DRONE_BUILD_NUMBER}
-
-services:
-  - name: docker
-    image: docker:dind
-    privileged: true
+      - docker run -d \
+          --name my-web-app \
+          --env-file .env \
+          -p 8000:3000 \
+          my-web-app:${DRONE_BUILD_NUMBER}
 
 volumes:
   - name: dockersock
-    temp: {}
+    host:
+      path: /var/run/docker.sock
