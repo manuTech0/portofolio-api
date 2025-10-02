@@ -3,26 +3,18 @@ type: docker
 name: default
 
 steps:
-  - name: build and run
+  - name: install dependencies
+    image: oven/bun:latest
+    commands:
+      - bun install
+
+  - name: build docker image
     image: docker
     environment:
-      ENV_FILE:
-        from_secret: ENV_FILE
-    volumes:
-      - name: dockersock
-        path: /var/run/docker.sock
+      DATABASE_URL:
+        from_secret: DATABASE_URL
     commands:
-      - echo "$ENV_FILE" > .env
       - docker build -t my-web-app:${DRONE_BUILD_NUMBER} .
-      - docker stop my-web-app || true
-      - docker rm my-web-app || true
-      - docker run -d \
-          --name my-web-app \
-          --env-file .env \
-          -p 8000:3000 \
-          my-web-app:${DRONE_BUILD_NUMBER}
 
-volumes:
-  - name: dockersock
-    host:
-      path: /var/run/docker.sock
+      - mkdir -p /drone/apps/projects
+      - docker save my-web-app:${DRONE_BUILD_NUMBER} -o /drone/apps/projects/my-web-app-${DRONE_BUILD_NUMBER}.tar
