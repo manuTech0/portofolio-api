@@ -8,60 +8,25 @@ steps:
     commands:
       - bun install
 
-  - name: build docker image
+  - name: build and run
     image: docker
     environment:
-      DATABASE_URL:
-        from_secret: DATABASE_URL
-      GOOGLE_CLIENT_ID:
-        from_secret: GOOGLE_CLIENT_ID
-      GOOGLE_CLIENT_SECRET:
-        from_secret: GOOGLE_CLIENT_SECRET
-      GOOGLE_REDIRECT_URL:
-        from_secret: GOOGLE_REDIRECT_URL
-      GITHUB_CLIENT_ID:
-        from_secret: GITHUB_CLIENT_ID
-      GITHUB_CLIENT_SECRET:
-        from_secret: GITHUB_CLIENT_SECRET
-      GITHUB_REDIRECT_URL:
-        from_secret: GITHUB_REDIRECT_URL
-      PRIVATE_KEY_FILE: 
-        from_secret: PRIVATE_KEY_FILE
-      PUBLIC_KEY_FILE:
-        from_secret: PUBLIC_KEY_FILE
-      ALLOWED_HOST:
-        from_secret: ALLOWED_HOST
+      ENV_FILE:
+        from_secret: ENV_FILE   # Drone secret berisi .env string
     commands:
+      # Simpan .env dari secret
+      - echo "$ENV_FILE" > .env
+
       # Build image
-      - docker build \
-          --build-arg DATABASE_URL=$DATABASE_URL \
-          --build-arg GOOGLE_CLIENT_ID=$GOOGLE_CLIENT_ID \
-          --build-arg GOOGLE_CLIENT_SECRET=$GOOGLE_CLIENT_SECRET \
-          --build-arg GOOGLE_REDIRECT_URL=$GOOGLE_REDIRECT_URL \
-          --build-arg GITHUB_CLIENT_ID=$GITHUB_CLIENT_ID \
-          --build-arg GITHUB_CLIENT_SECRET=$GITHUB_CLIENT_SECRET \
-          --build-arg GITHUB_REDIRECT_URL=$GITHUB_REDIRECT_URL \
-          --build-arg PRIVATE_KEY_FILE=$PRIVATE_KEY_FILE \
-          --build-arg PUBLIC_KEY_FILE=$PUBLIC_KEY_FILE \
-          --build-arg ALLOWED_HOST=$ALLOWED_HOST \
-          -t my-web-app:${DRONE_BUILD_NUMBER} .
+      - docker build -t my-web-app:${DRONE_BUILD_NUMBER} .
 
       # Stop container lama jika ada
       - docker stop my-web-app || true
       - docker rm my-web-app || true
 
-      # Jalankan container baru
+      # Run container baru pakai env-file
       - docker run -d \
           --name my-web-app \
+          --env-file .env \
           -p 8000:3000 \
-          -e DATABASE_URL=$DATABASE_URL \
-          -e GOOGLE_CLIENT_ID=$GOOGLE_CLIENT_ID \
-          -e GOOGLE_CLIENT_SECRET=$GOOGLE_CLIENT_SECRET \
-          -e GOOGLE_REDIRECT_URL=$GOOGLE_REDIRECT_URL \
-          -e GITHUB_CLIENT_ID=$GITHUB_CLIENT_ID \
-          -e GITHUB_CLIENT_SECRET=$GITHUB_CLIENT_SECRET \
-          -e GITHUB_REDIRECT_URL=$GITHUB_REDIRECT_URL \
-          -e PRIVATE_KEY_FILE=$PRIVATE_KEY_FILE \
-          -e PUBLIC_KEY_FILE=$PUBLIC_KEY_FILE \
-          -e ALLOWED_HOST=$ALLOWED_HOST \
           my-web-app:${DRONE_BUILD_NUMBER}
