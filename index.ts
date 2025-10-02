@@ -53,7 +53,8 @@ const yoga = createYoga({
             requestHeaders: [ "x-csrf-token" ]
         }),
     ],
-    context: createContext
+    context: createContext,
+    graphiql: process.env.NODE_ENV === "production"
 })
 
 app.use(cors({
@@ -180,8 +181,8 @@ app.get("/generate-token", async (req: Request, res: Response) => {
     }).redirect(redirectUrl)
 })
 
-// app.listen(process.env.PORT ?? 4000, (p) => {
-//     logger.info(`API listening in *:${process.env.PORT ?? 4000}`)
-// })
+app.listen(process.env.PORT ?? 4000, (p) => {
+    logger.info(`API listening in *:${process.env.PORT ?? 4000}`)
+})
 
 export default app
