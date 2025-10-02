@@ -1,4 +1,13 @@
+kind: pipeline
+type: docker
+name: default
+
 steps:
+  - name: install dependencies
+    image: oven/bun:latest
+    commands:
+      - bun install
+
   - name: build docker image
     image: docker:20.10
     environment:
