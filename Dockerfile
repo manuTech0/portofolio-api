@@ -8,7 +8,7 @@ RUN bun install
 
 COPY . .
 
-FROM debian:buildseye-slim
+FROM debian:trixie-slim
 WORKDIR /app
 COPY --from=build /app .
 EXPOSE 4000
