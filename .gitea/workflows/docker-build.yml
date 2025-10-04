@@ -19,21 +19,24 @@ jobs:
 
       - name: Build docker
         run: |
-          IMAGE_NAME="${GITEA_REPO_NAME}:${GITEA_WORKFLOW_SHA}"
+          # Gunakan nama image custom dan commit short hash sebagai tag
+          GIT_COMMIT=$(git rev-parse --short HEAD)
+          IMAGE_NAME="myapp:${GIT_COMMIT}"
           echo "Building image $IMAGE_NAME..."
           docker build -t $IMAGE_NAME .
 
       - name: Export docker image
         run: |
-          IMAGE_NAME="${GITEA_REPO_NAME}:${GITEA_WORKFLOW_SHA}"
-          DEST_DIR="/opt/myapps/${GITEA_REPO_NAME}"
-          echo "Creating folder $DEST_DIR..."
+          GIT_COMMIT=$(git rev-parse --short HEAD)
+          IMAGE_NAME="myapp:${GIT_COMMIT}"
+          DEST_DIR="/opt/myapps/myapp"
           mkdir -p $DEST_DIR
           echo "Saving image $IMAGE_NAME to $DEST_DIR/$IMAGE_NAME.tar..."
           docker save $IMAGE_NAME -o $DEST_DIR/$IMAGE_NAME.tar
 
       - name: Notify
         run: |
-          IMAGE_NAME="${GITEA_REPO_NAME}:${GITEA_WORKFLOW_SHA}"
-          DEST_DIR="/opt/myapps/${GITEA_REPO_NAME}"
+          GIT_COMMIT=$(git rev-parse --short HEAD)
+          IMAGE_NAME="myapp:${GIT_COMMIT}"
+          DEST_DIR="/opt/myapps/myapp"
           echo "Saved successfully: $DEST_DIR/$IMAGE_NAME.tar"
