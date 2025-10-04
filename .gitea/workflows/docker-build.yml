@@ -20,9 +20,16 @@ jobs:
 
       - name: Build docker
         run: |
-          docker build -t portofolio-api:latest .
+          IMAGE_NAME="${GITEA_REPO_NAME}:${GITEA_WORKFLOW_SHA}"
+          docker build -t $IMAGE_NAME .
       
       - name: Export docker image
         run: |
-          mkdir -p /opt/myapps
-          docker save portofolio-api:latest -o /opt/myapps/portofolio-api.tar 
+          mkdir -p /opt/myapps/${GITEA_REPOSITORY}
+          IMAGE_NAME="${GITEA_REPO_NAME}:${GITEA_WORKFLOW_SHA}"
+          docker save portofolio-api:latest -o /opt/myapps/$GITEA_REPOSITORY/$IMAGE_NAME.tar
+
+      - name: Notify
+        run: |
+          IMAGE_NAME="${GITEA_REPO_NAME}:${GITEA_WORKFLOW_SHA}"
+          echo "Saved success /opt/myapps/${GITEA_REPOSITORY}/${IMAGE_NAME}.tar}"
