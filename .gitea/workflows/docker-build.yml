@@ -23,10 +23,6 @@ jobs:
           echo "${{ secrets.ENV_FILE }}" > .env
           bun install
 
-      - name: build app
-        run: |
-          bun run build
-
       - name: Build docker
         run: |
           docker build -t portofolio-api:latest .
