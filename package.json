@@ -4,7 +4,6 @@
   "type": "module",
   "private": true,
   "scripts": {
-    "postinstall": "prisma generate",
     "dev": "NODE_ENV=development bun run --watch index.ts",
     "start": "NODE_ENV=production bun run dist/index.js",
     "build": "prisma migrate deploy && prisma generate "
