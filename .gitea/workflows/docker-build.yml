@@ -17,11 +17,6 @@ jobs:
           git remote add origin $GITHUB_SERVER_URL/$GITHUB_REPOSITORY.git
           git fetch --depth=1 origin $GITHUB_SHA
           git checkout FETCH_HEAD
-        
-      - name: install dependencies
-        run: |
-          echo "${{ secrets.ENV_FILE }}" > .env
-          bun install
 
       - name: Build docker
         run: |
