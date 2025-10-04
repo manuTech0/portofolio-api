@@ -11,6 +11,6 @@ COPY . .
 FROM debian:buildseye-slim
 WORKDIR /app
 COPY --from=build /app .
-EXPOSE 3000
+EXPOSE 4000
 
 CMD ["bun", "run", "index.ts"]
