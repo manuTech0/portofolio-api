@@ -3,7 +3,7 @@ name: Build docker app
 on:
   push:
     branches:
-      - main
+      - [ main ]
   workflow_dispatch:
     
 
@@ -20,9 +20,9 @@ jobs:
 
       - name: Build docker
         run: |
-          docker build -t portofolio-api:latest
+          docker build -t portofolio-api:latest .
       
       - name: Export docker image
         run: |
           mkdir -p /opt/myapps
-          docker save portofolio-api:latest -o /opt/myapps/portofolio-api.tar
+          docker save portofolio-api:latest -o /opt/myapps/portofolio-api.tar 
