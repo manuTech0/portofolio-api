@@ -20,6 +20,7 @@ jobs:
 
       - name: Build docker
         run: |
+          echo "$ENV_FILE" > .env
           docker build -t portofolio-api:latest .
       
       - name: Export docker image
