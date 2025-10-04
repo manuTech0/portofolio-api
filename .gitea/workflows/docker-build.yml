@@ -8,7 +8,7 @@ on:
 
 jobs:
   build:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-latest:docker://manutech0/bun-docker:latest
     steps:
       - name: Install git
         run: |
