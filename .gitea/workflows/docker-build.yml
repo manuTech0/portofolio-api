@@ -19,6 +19,7 @@ jobs:
         
       - name: install dependencies
         run: |
+          echo "${{ secrets.ENV_FILE }}" > .env
           bun install
 
       - name: build app
@@ -27,7 +28,6 @@ jobs:
 
       - name: Build docker
         run: |
-          echo "${{ secrets.ENV_FILE }}" > .env
           docker build -t portofolio-api:latest .
       
       - name: Export docker image
