@@ -10,10 +10,6 @@ jobs:
   build:
     runs-on: debian-custom
     steps:
-      - name: Install git
-        run: |
-          apt-get update
-          apt-get install -y git
       - name: Checkout code
         run: |
           git init
@@ -25,9 +21,13 @@ jobs:
         run: |
           bun install
 
+      - name: build app
+        run: |
+          bun run build
+
       - name: Build docker
         run: |
-          echo "$ENV_FILE" > .env
+          echo "${{ secrets.ENV_FILE }}" > .env
           docker build -t portofolio-api:latest .
       
       - name: Export docker image
