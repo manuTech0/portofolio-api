@@ -106,7 +106,7 @@ app.get("/", async (req: Request, res: Response) => {
     const sessionId = lucia.readSessionCookie(req.headers.cookie ?? "")
     memoryStore.set("oauth_redirect_url", url.href, 300 * 1000)
 
-    if (!sessionId) {
+    if (sessionId) {
         return res.redirect("/generate-token")
     }
 
@@ -123,7 +123,7 @@ app.get("/signup", async (req: Request, res: Response) => {
         return res.status(403).json({ error: "Invalid redirect url" })
     }
 
-    if (!memoryStore.get("oauth_redirect_url")) {
+    if (memoryStore.get("oauth_redirect_url")) {
         memoryStore.set("oauth_redirect_url", url.href, 300 * 1000)
     }
 
