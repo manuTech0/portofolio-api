@@ -4,7 +4,7 @@ set -e
 # Tunggu database siap (opsional)
 if [ -n "$DATABASE_URL" ]; then
   echo "Running Prisma migrations..."
-  node_modules/.bin/prisma migrate deploy
+  bun run build
 else
   echo "DATABASE_URL not set. Skipping migrations."
 fi
