@@ -77,7 +77,7 @@ router.get("/github/callback", async (req: Request, res: Response) => {
                 res.status(400).end()
             }
             if(e instanceof Error) {
-                logger.error("Unknown error", e.message)
+                logger.error("Unknown error", e)
                 return res.status(400).end()
             }
         }
