@@ -34,6 +34,11 @@ jobs:
         SERVER_HOST: ${{ secrets.SERVER_HOST }}
         SERVER_USER: ${{ secrets.SERVER_USER }}
         DEPLOY_PATH: ${{ secrets.DEPLOY_PATH }}
+        SERVER_PORT: ${{ secrets.SERVER_PORT }}
       run: |
         echo "Deploying to $SERVER_USER@$SERVER_HOST"
         cap production deploy
+
+    - name: Reload caddy
+      run: |
+        ssh -o StrictHostKeyChecking=no -p ${{ secrets.SERVER_PORT }} ${{ secrets.SERVER_USER }}@${{ secrets.SERVER_HOST }} "sudo systemctl restart caddy"
