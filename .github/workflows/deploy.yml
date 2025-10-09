@@ -1,0 +1,39 @@
+name: Deploy to Capistrano
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  deploy:
+  name: Deploy to production
+  runs-on: ubuntu-latest
+
+  steps:
+    - name: Checkout Repo
+      uses: actions/checkout@v4
+
+    - name: Setup ruby
+      uses: ruby/setup-ruby@v1
+      with:
+        ruby-version: '3.1'
+
+    - name: Install Capistrano
+      run: |
+        gem install bundler erb Capistrano
+        bundle install || true
+    
+    - name: Setup SSH
+      uses: webfactory/ssh-agent@v0.8.0
+      with:
+        ssh-private-key: ${{ secrets.SERVER_SSH_KEY }}
+
+    - name: Deploy to server
+      env:
+        SERVER_HOST: ${{ secrets.SERVER_HOST }}
+        SERVER_USER: ${{ secrets.SERVER_USER }}
+        DEPLOY_PATH: ${{ secrets.DEPLOY_PATH }}
+      run: |
+        echo "Deploying to $SERVER_USER@$SERVER_HOST"
+        cap production deploy
