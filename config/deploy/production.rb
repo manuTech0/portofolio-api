@@ -66,6 +66,5 @@ set :ssh_options, {
     user: "root",
     port: "36000",
     forward_agent: true,
-    keys: %w(~/.ssh/vps_key),
     auth_methods: ["publickey"]
 }
