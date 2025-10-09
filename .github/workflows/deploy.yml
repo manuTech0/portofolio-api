@@ -36,7 +36,7 @@ jobs:
           SERVER_PORT: ${{ secrets.SERVER_PORT }}
         run: |
           echo "Deploying to ${{ secrets.SERVER_USER }}@${{ secrets.SERVER_HOST }}"
-          cap production deploy
+          bundler exec cap production deploy
 
       - name: Reload caddy
         run: |
