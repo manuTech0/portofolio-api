@@ -69,6 +69,6 @@ namespace :pm2 do
     end
 end
 
-after "deploy:update", "bun:install"
+after "deploy:updated", "bun:install"
 after "bun:install", "bun:migrate"
 after "bun:migrate", "pm2:restart"
