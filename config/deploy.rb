@@ -6,7 +6,7 @@ set :repo_url, "git@github.com:manuTech0/my-portofolio.git"
 set :branch, `git rev-parse --abbrev-ref HEAD`.chomp
 set :deploy_to, "/var/www/portofolio-api"
 
-append :linked_files, ".env"
+append :linked_files, ".env", "package.json"
 append :linked_dirs, "logs", "storage", "node_modules"  # node_modules disarankan untuk cache Bun
 
 set :default_shell, "/bin/bash -l"
@@ -29,7 +29,10 @@ namespace :bun do
   task :install do
     on roles(:app) do
       within release_path do
-        execute :bun, "install", "--no-save", "--frozen-lockfile"
+        # execute "cp package.json package.json.bak"
+        execute "ls"
+        execute :bun, "install", "--no-save"
+        # execute "mv package.json.bak package.json"
       end
     end
   end

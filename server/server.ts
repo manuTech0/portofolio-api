@@ -53,7 +53,12 @@ router.get("/github/callback", async (req: Request, res: Response) => {
             })
             const githubUser: GitHubUser = await githubUserResponse.json()
             const emailUsers: GithubEmail[] = await emailUsersFetch.json()
-            let user = await prisma.users.findUnique({ where: { email: (emailUsers.find(i => i.primary))?.email ?? `${githubUser.id}@github.local` } })
+            let user = await prisma.users.findFirst({ where: { 
+                OR: [
+                    { email: (emailUsers.find(i => i.primary))?.email ?? `${githubUser.id}@github.local` },
+                    { providerId:  String(githubUser.id) }
+                ]
+            }})
             if(!user) {
                 user = await prisma.users.create({
                     data: {
@@ -118,7 +123,12 @@ router.get("/google/callback", async (req: Request, res: Response) => {
                 }
             })
             const googleUser: GoogleUser = await googleUserResponse.json()
-            let user = await prisma.users.findUnique({ where: { email: googleUser.email ?? `${googleUser.sub}@google.local` } })
+            let user = await prisma.users.findFirst({ where: { 
+                OR: [
+                    { email: googleUser.email ?? `${googleUser.sub}@google.local` },
+                    { providerId: String(googleUser.sub) }
+                ]
+            }})
             if(!user) {
                 user = await prisma.users.create({
                     data: {
