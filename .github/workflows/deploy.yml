@@ -21,7 +21,7 @@ jobs:
 
       - name: Install Capistrano
         run: |
-          gem install bundler erb Capistrano
+          gem install bundler erb capistrano
           bundle install || true
       
       - name: Setup SSH
