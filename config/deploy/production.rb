@@ -60,9 +60,12 @@
 #     # password: "please use keys"
 #   }
 
-server "191.101.190.191", user: "manu", roles: %w{app db web}
+server "191.101.190.191:36000", user: "root", roles: %w{app db web}
 
 set :ssh_options, {
+    user: "root",
+    port: "36000",
     forward_agent: true,
+    keys: %w(~/.ssh/vps_key),
     auth_methods: ["publickey"]
 }

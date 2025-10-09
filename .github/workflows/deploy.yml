@@ -36,7 +36,7 @@ jobs:
           DEPLOY_PATH: ${{ secrets.DEPLOY_PATH }}
           SERVER_PORT: ${{ secrets.SERVER_PORT }}
         run: |
-          echo "Deploying to $SERVER_USER@$SERVER_HOST"
+          echo "Deploying to ${{ secrets.SERVER_USER }}@${{ secrets.SERVER_HOST }}"
           cap production deploy
 
       - name: Reload caddy

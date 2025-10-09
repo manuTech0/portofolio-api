@@ -5,7 +5,7 @@ set :application, "portofolio-api"
 set :repo_url, "git@github.com:manuTech0/my-portofolio.git"
 
 # Default branch is :master
-# ask :branch, `git rev-parse --abbrev-ref HEAD`.chomp
+set :branch, `git rev-parse --abbrev-ref HEAD`.chomp
 
 # Default deploy_to directory is /var/www/my_app_name
 set :deploy_to, "/var/www/portofolio-api"
@@ -21,13 +21,16 @@ set :deploy_to, "/var/www/portofolio-api"
 # set :pty, true
 
 # Default value for :linked_files is []
-# append :linked_files, "config/database.yml", 'config/master.key'
+append :linked_files, ".env"
 
 # Default value for linked_dirs is []
-append :linked_dirs, "logs", "tmp/pids", "tmp/cache", "tmp/sockets", "public/system", "vendor", "storage", "node_modules"
+append :linked_dirs, "logs", "storage"
 
 # Default value for default_env is {}
-# set :default_env, { path: "/opt/ruby/bin:$PATH" }
+set :default_env, {
+  'PATH' => "$HOME/.bun/bin:$PATH",
+  'BUN_INSTALL' => "$HOME/.bun"
+}
 
 # Default value for local_user is ENV['USER']
 # set :local_user, -> { `git config user.name`.chomp }
@@ -44,7 +47,7 @@ set :pm2_process_file, "ecosystem.config.js"
 namespace :bun do
     task :install do
         on roles(:app) do
-            within releases_path do
+            within release_path do
                 execute :bun, "install"
             end
         end
@@ -53,7 +56,7 @@ end
 namespace :bun do
     task :migrate do
         on roles(:app) do
-            within releases_path do
+            within release_path do
                 execute :bun, "run", "migrate"
             end
         end
@@ -62,7 +65,7 @@ end
 namespace :pm2 do
     task :restart do
         on roles(:app) do
-            within releases_path do
+            within release_path do
                 execute :pm2, "reload", "porto-api", "||", "pm2", "start", "bun", "--name", "porto-api", "--", "run", "start"
             end
         end
