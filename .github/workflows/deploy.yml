@@ -16,30 +16,12 @@ jobs:
         with:
           fetch-depth: 0
 
-      - name: Setup ruby
-        uses: ruby/setup-ruby@v1
-        with:
-          ruby-version: '3.4.5'
-
-      - name: Install Capistrano
-        run: |
-          bundle install || true
-      
       - name: Setup SSH
         uses: webfactory/ssh-agent@v0.8.0
         with:
           ssh-private-key: ${{ secrets.SERVER_SSH_KEY }}
-
-      - name: Deploy to server
-        env:
-          SERVER_HOST: ${{ secrets.SERVER_HOST }}
-          SERVER_USER: ${{ secrets.SERVER_USER }}
-          DEPLOY_PATH: ${{ secrets.DEPLOY_PATH }}
-          SERVER_PORT: ${{ secrets.SERVER_PORT }}
-        run: |
-          echo "Deploying to ${{ secrets.SERVER_USER }}@${{ secrets.SERVER_HOST }}"
-          bundler exec cap production deploy
-
-      - name: Reload caddy
-        run: |
-          ssh -o StrictHostKeyChecking=no -p ${{ secrets.SERVER_PORT }} ${{ secrets.SERVER_USER }}@${{ secrets.SERVER_HOST }} "sudo systemctl restart caddy"
+          host: ${{ secrets.SERVER_HOST }}
+          user: ${{ secrets.SERVER_USER }}
+          port: ${{ secrets.SERVER_PORT }}
+          script: |
+            bash /home/${{ secrets.SERVER_USER }}/scripts/deploy.sh
