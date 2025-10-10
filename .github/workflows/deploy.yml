@@ -19,7 +19,7 @@ jobs:
       - name: Setup SSH
         uses:  appleboy/ssh-action@v1.1.0
         with:
-          ssh-private-key: ${{ secrets.SERVER_SSH_KEY }}
+          key: ${{ secrets.SERVER_SSH_KEY }}
           host: ${{ secrets.SERVER_HOST }}
           user: ${{ secrets.SERVER_USER }}
           port: ${{ secrets.SERVER_PORT }}
