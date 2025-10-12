@@ -76,7 +76,7 @@ app.use("/auth", router)
 
 function validateRedirectUrl(redirectUrl: string | undefined, allowedHost?: string[]): URL | null {
     try {
-        const url = new URL(decodeURIComponent(redirectUrl ?? "http://localhost:3000/"))
+        const url = new URL(decodeURIComponent(redirectUrl ?? "https://www.manu-tech.my.id"))
         if (process.env.NODE_ENV === "production" && allowedHost && !allowedHost.includes(url.hostname)) {
             return null
         }
