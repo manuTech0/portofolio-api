@@ -272,5 +272,22 @@ router.post("/logout", async (req: Request, res: Response) => {
         })
 		.json({ logout: true });
 })
+router.get("/logout", async (req: Request, res: Response) => {
+    const sessionId = lucia.readSessionCookie(req.headers.cookie ?? "")
+    if (!sessionId) {
+        logger.info(sessionId)
+		return res.status(400).json({ logout: false })
+	}
+	await lucia.invalidateSession(sessionId);
+	return res
+		.setHeader("Set-Cookie", lucia.createBlankSessionCookie().serialize())
+		.cookie("token", "", {
+            httpOnly: true,
+            secure: process.env.NODE_ENV == "production",
+            sameSite: "lax",
+            expires: new Date(0)
+        })
+		.json({ logout: true });
+})
 
 export default router
