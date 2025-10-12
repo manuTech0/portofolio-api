@@ -3552,18 +3552,21 @@ export namespace Prisma {
     id: string | null
     userId: string | null
     expiresAt: Date | null
+    redirectUrl: string | null
   }
 
   export type SessionMaxAggregateOutputType = {
     id: string | null
     userId: string | null
     expiresAt: Date | null
+    redirectUrl: string | null
   }
 
   export type SessionCountAggregateOutputType = {
     id: number
     userId: number
     expiresAt: number
+    redirectUrl: number
     _all: number
   }
 
@@ -3572,18 +3575,21 @@ export namespace Prisma {
     id?: true
     userId?: true
     expiresAt?: true
+    redirectUrl?: true
   }
 
   export type SessionMaxAggregateInputType = {
     id?: true
     userId?: true
     expiresAt?: true
+    redirectUrl?: true
   }
 
   export type SessionCountAggregateInputType = {
     id?: true
     userId?: true
     expiresAt?: true
+    redirectUrl?: true
     _all?: true
   }
 
@@ -3663,6 +3669,7 @@ export namespace Prisma {
     id: string
     userId: string
     expiresAt: Date
+    redirectUrl: string | null
     _count: SessionCountAggregateOutputType | null
     _min: SessionMinAggregateOutputType | null
     _max: SessionMaxAggregateOutputType | null
@@ -3686,6 +3693,7 @@ export namespace Prisma {
     id?: boolean
     userId?: boolean
     expiresAt?: boolean
+    redirectUrl?: boolean
     user?: boolean | UsersDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["session"]>
 
@@ -3693,6 +3701,7 @@ export namespace Prisma {
     id?: boolean
     userId?: boolean
     expiresAt?: boolean
+    redirectUrl?: boolean
     user?: boolean | UsersDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["session"]>
 
@@ -3700,6 +3709,7 @@ export namespace Prisma {
     id?: boolean
     userId?: boolean
     expiresAt?: boolean
+    redirectUrl?: boolean
     user?: boolean | UsersDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["session"]>
 
@@ -3707,9 +3717,10 @@ export namespace Prisma {
     id?: boolean
     userId?: boolean
     expiresAt?: boolean
+    redirectUrl?: boolean
   }
 
-  export type SessionOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "userId" | "expiresAt", ExtArgs["result"]["session"]>
+  export type SessionOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "userId" | "expiresAt" | "redirectUrl", ExtArgs["result"]["session"]>
   export type SessionInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     user?: boolean | UsersDefaultArgs<ExtArgs>
   }
@@ -3729,6 +3740,7 @@ export namespace Prisma {
       id: string
       userId: string
       expiresAt: Date
+      redirectUrl: string | null
     }, ExtArgs["result"]["session"]>
     composites: {}
   }
@@ -4156,6 +4168,7 @@ export namespace Prisma {
     readonly id: FieldRef<"Session", 'String'>
     readonly userId: FieldRef<"Session", 'String'>
     readonly expiresAt: FieldRef<"Session", 'DateTime'>
+    readonly redirectUrl: FieldRef<"Session", 'String'>
   }
     
 
@@ -5652,7 +5665,8 @@ export namespace Prisma {
   export const SessionScalarFieldEnum: {
     id: 'id',
     userId: 'userId',
-    expiresAt: 'expiresAt'
+    expiresAt: 'expiresAt',
+    redirectUrl: 'redirectUrl'
   };
 
   export type SessionScalarFieldEnum = (typeof SessionScalarFieldEnum)[keyof typeof SessionScalarFieldEnum]
@@ -5968,6 +5982,7 @@ export namespace Prisma {
     id?: StringFilter<"Session"> | string
     userId?: StringFilter<"Session"> | string
     expiresAt?: DateTimeFilter<"Session"> | Date | string
+    redirectUrl?: StringNullableFilter<"Session"> | string | null
     user?: XOR<UsersScalarRelationFilter, UsersWhereInput>
   }
 
@@ -5975,6 +5990,7 @@ export namespace Prisma {
     id?: SortOrder
     userId?: SortOrder
     expiresAt?: SortOrder
+    redirectUrl?: SortOrderInput | SortOrder
     user?: UsersOrderByWithRelationInput
   }
 
@@ -5985,6 +6001,7 @@ export namespace Prisma {
     NOT?: SessionWhereInput | SessionWhereInput[]
     userId?: StringFilter<"Session"> | string
     expiresAt?: DateTimeFilter<"Session"> | Date | string
+    redirectUrl?: StringNullableFilter<"Session"> | string | null
     user?: XOR<UsersScalarRelationFilter, UsersWhereInput>
   }, "id">
 
@@ -5992,6 +6009,7 @@ export namespace Prisma {
     id?: SortOrder
     userId?: SortOrder
     expiresAt?: SortOrder
+    redirectUrl?: SortOrderInput | SortOrder
     _count?: SessionCountOrderByAggregateInput
     _max?: SessionMaxOrderByAggregateInput
     _min?: SessionMinOrderByAggregateInput
@@ -6004,6 +6022,7 @@ export namespace Prisma {
     id?: StringWithAggregatesFilter<"Session"> | string
     userId?: StringWithAggregatesFilter<"Session"> | string
     expiresAt?: DateTimeWithAggregatesFilter<"Session"> | Date | string
+    redirectUrl?: StringNullableWithAggregatesFilter<"Session"> | string | null
   }
 
   export type TodosWhereInput = {
@@ -6254,6 +6273,7 @@ export namespace Prisma {
   export type SessionCreateInput = {
     id?: string
     expiresAt: Date | string
+    redirectUrl?: string | null
     user: UsersCreateNestedOneWithoutSessionInput
   }
 
@@ -6261,11 +6281,13 @@ export namespace Prisma {
     id?: string
     userId: string
     expiresAt: Date | string
+    redirectUrl?: string | null
   }
 
   export type SessionUpdateInput = {
     id?: StringFieldUpdateOperationsInput | string
     expiresAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    redirectUrl?: NullableStringFieldUpdateOperationsInput | string | null
     user?: UsersUpdateOneRequiredWithoutSessionNestedInput
   }
 
@@ -6273,23 +6295,27 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     userId?: StringFieldUpdateOperationsInput | string
     expiresAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    redirectUrl?: NullableStringFieldUpdateOperationsInput | string | null
   }
 
   export type SessionCreateManyInput = {
     id?: string
     userId: string
     expiresAt: Date | string
+    redirectUrl?: string | null
   }
 
   export type SessionUpdateManyMutationInput = {
     id?: StringFieldUpdateOperationsInput | string
     expiresAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    redirectUrl?: NullableStringFieldUpdateOperationsInput | string | null
   }
 
   export type SessionUncheckedUpdateManyInput = {
     id?: StringFieldUpdateOperationsInput | string
     userId?: StringFieldUpdateOperationsInput | string
     expiresAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    redirectUrl?: NullableStringFieldUpdateOperationsInput | string | null
   }
 
   export type TodosCreateInput = {
@@ -6608,18 +6634,21 @@ export namespace Prisma {
     id?: SortOrder
     userId?: SortOrder
     expiresAt?: SortOrder
+    redirectUrl?: SortOrder
   }
 
   export type SessionMaxOrderByAggregateInput = {
     id?: SortOrder
     userId?: SortOrder
     expiresAt?: SortOrder
+    redirectUrl?: SortOrder
   }
 
   export type SessionMinOrderByAggregateInput = {
     id?: SortOrder
     userId?: SortOrder
     expiresAt?: SortOrder
+    redirectUrl?: SortOrder
   }
 
   export type TodosCountOrderByAggregateInput = {
@@ -7032,11 +7061,13 @@ export namespace Prisma {
   export type SessionCreateWithoutUserInput = {
     id?: string
     expiresAt: Date | string
+    redirectUrl?: string | null
   }
 
   export type SessionUncheckedCreateWithoutUserInput = {
     id?: string
     expiresAt: Date | string
+    redirectUrl?: string | null
   }
 
   export type SessionCreateOrConnectWithoutUserInput = {
@@ -7117,6 +7148,7 @@ export namespace Prisma {
     id?: StringFilter<"Session"> | string
     userId?: StringFilter<"Session"> | string
     expiresAt?: DateTimeFilter<"Session"> | Date | string
+    redirectUrl?: StringNullableFilter<"Session"> | string | null
   }
 
   export type TodosUpsertWithoutUserInput = {
@@ -7417,6 +7449,7 @@ export namespace Prisma {
   export type SessionCreateManyUserInput = {
     id?: string
     expiresAt: Date | string
+    redirectUrl?: string | null
   }
 
   export type PostsUpdateWithoutUserInput = {
@@ -7452,16 +7485,19 @@ export namespace Prisma {
   export type SessionUpdateWithoutUserInput = {
     id?: StringFieldUpdateOperationsInput | string
     expiresAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    redirectUrl?: NullableStringFieldUpdateOperationsInput | string | null
   }
 
   export type SessionUncheckedUpdateWithoutUserInput = {
     id?: StringFieldUpdateOperationsInput | string
     expiresAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    redirectUrl?: NullableStringFieldUpdateOperationsInput | string | null
   }
 
   export type SessionUncheckedUpdateManyWithoutUserInput = {
     id?: StringFieldUpdateOperationsInput | string
     expiresAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    redirectUrl?: NullableStringFieldUpdateOperationsInput | string | null
   }
 
 

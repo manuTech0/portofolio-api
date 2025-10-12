@@ -156,11 +156,8 @@ app.get("/generate-token", async (req: Request, res: Response) => {
     }
 
     const redirectUrl = memoryStore.get("oauth_redirect_url") as string | undefined
-    if (!redirectUrl) {
-        return res.redirect("/")
-    }
 
-    const url = new URL(redirectUrl)
+    const url = new URL(redirectUrl || sessionData.redirectUrl || "https://www.manu-tech.my.id/")
 
     const payload: CustomJWTPayload = {
         email: sessionData.user.email,
@@ -178,7 +175,7 @@ app.get("/generate-token", async (req: Request, res: Response) => {
         secure: process.env.NODE_ENV === "production",
         sameSite: "lax",
         maxAge: 60 * 60 * 1000
-    }).redirect(redirectUrl)
+    }).redirect(url.href)
 })
 
 app.listen(process.env.PORT ?? 4000, (p) => {

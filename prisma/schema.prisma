@@ -12,6 +12,7 @@ generator pothos {
 datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
+  shadowDatabaseUrl = env("SHADOW_DATABASE_URL")
 }
 
 model Users {
@@ -53,6 +54,7 @@ model Session {
   id        String   @id @default(cuid())
   userId    String
   expiresAt DateTime
+  redirectUrl String?
   user      Users    @relation(fields: [userId], references: [userId], onDelete: Cascade)
 }
 

@@ -21,7 +21,10 @@ export const logger = winston.createLogger({
         }),
       ]
     : [
-        new winston.transports.File({ filename: "logs/all.log" }),
+        new winston.transports.Console({
+          format: combine(colorize(), timestamp(), logFormat)
+        }),
         new winston.transports.File({ filename: "logs/error.log", level: "error" }),
+        new winston.transports.File({ filename: "logs/debug.log", level: "debug" }),
       ],
 })

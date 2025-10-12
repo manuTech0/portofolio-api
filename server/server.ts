@@ -9,6 +9,7 @@ import { GitHub, Google, generateState, generateCodeVerifier, OAuth2RequestError
 import type { GithubEmail, GitHubUser, GoogleUser } from "../lib/types";
 import { ZodError } from "zod";
 import { loginSchema, SignUpSchema } from "../lib/zodSchema";
+import { memoryStore } from "../lib/memoryStore";
 
 const router = Router()
 
@@ -73,7 +74,9 @@ router.get("/github/callback", async (req: Request, res: Response) => {
                     }
                 })
             }
-            const session = await lucia.createSession(String(user.userId), {})
+            const session = await lucia.createSession(String(user.userId), {
+                redirectUrl: (memoryStore.get("oauth_redirect_url") as string | undefined) || "https://www.manu-tech.my.id"
+            })
             const cookie = await lucia.createSessionCookie(session.id)
             res.setHeader("Set-Cookie", cookie.serialize())
             return res.redirect("/generate-token")
@@ -142,7 +145,9 @@ router.get("/google/callback", async (req: Request, res: Response) => {
                     }
                 })
             }
-            const session = await lucia.createSession(String(user.userId), {})
+            const session = await lucia.createSession(String(user.userId), {
+                redirectUrl: (memoryStore.get("oauth_redirect_url") as string | undefined) || "https://www.manu-tech.my.id"
+            })
             const cookie = lucia.createSessionCookie(session.id)
             res.setHeader("Set-Cookie", cookie.serialize())
             res.redirect("/generate-token")
