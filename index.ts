@@ -54,7 +54,7 @@ const yoga = createYoga({
         }),
     ],
     context: createContext,
-    graphiql: process.env.NODE_ENV === "production"
+    graphiql: process.env.NODE_ENV !== "production"
 })
 
 app.use(cors({
