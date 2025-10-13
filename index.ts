@@ -15,7 +15,12 @@ import cors from "cors";
 
 const app = express()
 
-
+function getAllowedHosts(): string[] | undefined {
+    return process.env.ALLOWED_HOST
+        ?.split(",")
+        .map(h => h.trim())
+        .filter(Boolean)
+}
 
 app.use(cookieParser())
 app.use(express.json())
@@ -43,7 +48,7 @@ const yoga = createYoga({
     },
     multipart: true,
     cors: {
-        origin: [ "http://localhost:3000" ],
+        origin: getAllowedHosts(),
         credentials: true,
         allowedHeaders: [ "x-csrf-token", "Authorization", "content-type" ],
         methods: ["POST"]
@@ -85,14 +90,6 @@ function validateRedirectUrl(redirectUrl: string | undefined, allowedHost?: stri
         return null
     }
 }
-
-function getAllowedHosts(): string[] | undefined {
-    return process.env.ALLOWED_HOST
-        ?.split(",")
-        .map(h => h.trim())
-        .filter(Boolean)
-}
-
 
 app.get("/", async (req: Request, res: Response) => {
     const redirectUrl = req.query.redirect_url?.toString()
