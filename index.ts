@@ -172,8 +172,9 @@ app.get("/generate-token", async (req: Request, res: Response) => {
 
     return res.cookie("token", JSON.stringify(jwtToken), {
         httpOnly: true,
+        domain: process.env.NODE_ENV === "production" ? ".manu-tech.my.id" : "localhost",
         secure: process.env.NODE_ENV === "production",
-        sameSite: "lax",
+        sameSite: "none",
         maxAge: 60 * 60 * 1000
     }).redirect(url.href)
 })

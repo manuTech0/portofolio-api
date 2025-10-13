@@ -173,7 +173,9 @@ router.post("/signin", async (req: Request, res: Response) => {
         if(user) {
             const passwordVerify = Bun.password.verifySync(password, user.password ?? "", "argon2id")
             if(passwordVerify) {
-                const session = await lucia.createSession(user.userId, {})
+                const session = await lucia.createSession(user.userId, {
+                    redirectUrl: (memoryStore.get("oauth_redirect_url") as string | undefined) || "https://www.manu-tech.my.id"
+                })
                 return res
                     .appendHeader("Set-Cookie", lucia.createSessionCookie((await session).id).serialize())
                     .appendHeader("Location", "/generate-token")
@@ -227,7 +229,10 @@ router.post("/signup", async (req: Request, res: Response) => {
                     role: "user"
                 }
             })
-            const session = await lucia.createSession(userCreated.userId, {})
+            const redirectUrl = memoryStore.get
+            const session = await lucia.createSession(userCreated.userId, {
+                redirectUrl: (memoryStore.get("oauth_redirect_url") as string | undefined) || "https://www.manu-tech.my.id"
+            })
             return res
                 .appendHeader("Set-Cookie", lucia.createSessionCookie(session.id).serialize())
                 .redirect("/generate-token")
