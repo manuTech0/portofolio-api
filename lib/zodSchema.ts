@@ -100,3 +100,25 @@ export const SignUpSchema = z.object({
     });
   }
 });
+
+export const createPostSchema = z.object({
+  title: z.string().min(1, "Title is required"),
+  content: z.string().min(1, "Content is required")
+});
+
+export const updatePostSchema = z.object({
+  postId: z.string().min(1, "Post ID is required"),
+  title: z.string().optional(),
+  content: z.string().optional()
+}).refine((data) => data.title || data.content, {
+  message: "At least one of 'title' or 'content' must be provided"
+});
+
+export const deletePostSchema = z.object({
+  postId: z.array(z.string().min(1)).min(1, "At least one postId is required")
+});
+
+export const changeVisibilitySchema = z.object({
+  postId: z.string().min(1, "Post ID is required")
+});
+

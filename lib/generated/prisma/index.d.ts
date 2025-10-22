@@ -1240,6 +1240,7 @@ export namespace Prisma {
     updateAt: Date | null
     provider: string | null
     providerId: string | null
+    uniqueId: string | null
   }
 
   export type UsersMaxAggregateOutputType = {
@@ -1256,6 +1257,7 @@ export namespace Prisma {
     updateAt: Date | null
     provider: string | null
     providerId: string | null
+    uniqueId: string | null
   }
 
   export type UsersCountAggregateOutputType = {
@@ -1272,6 +1274,7 @@ export namespace Prisma {
     updateAt: number
     provider: number
     providerId: number
+    uniqueId: number
     _all: number
   }
 
@@ -1290,6 +1293,7 @@ export namespace Prisma {
     updateAt?: true
     provider?: true
     providerId?: true
+    uniqueId?: true
   }
 
   export type UsersMaxAggregateInputType = {
@@ -1306,6 +1310,7 @@ export namespace Prisma {
     updateAt?: true
     provider?: true
     providerId?: true
+    uniqueId?: true
   }
 
   export type UsersCountAggregateInputType = {
@@ -1322,6 +1327,7 @@ export namespace Prisma {
     updateAt?: true
     provider?: true
     providerId?: true
+    uniqueId?: true
     _all?: true
   }
 
@@ -1411,6 +1417,7 @@ export namespace Prisma {
     updateAt: Date
     provider: string | null
     providerId: string | null
+    uniqueId: string
     _count: UsersCountAggregateOutputType | null
     _min: UsersMinAggregateOutputType | null
     _max: UsersMaxAggregateOutputType | null
@@ -1444,6 +1451,7 @@ export namespace Prisma {
     updateAt?: boolean
     provider?: boolean
     providerId?: boolean
+    uniqueId?: boolean
     posts?: boolean | Users$postsArgs<ExtArgs>
     session?: boolean | Users$sessionArgs<ExtArgs>
     todos?: boolean | Users$todosArgs<ExtArgs>
@@ -1464,6 +1472,7 @@ export namespace Prisma {
     updateAt?: boolean
     provider?: boolean
     providerId?: boolean
+    uniqueId?: boolean
   }, ExtArgs["result"]["users"]>
 
   export type UsersSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
@@ -1480,6 +1489,7 @@ export namespace Prisma {
     updateAt?: boolean
     provider?: boolean
     providerId?: boolean
+    uniqueId?: boolean
   }, ExtArgs["result"]["users"]>
 
   export type UsersSelectScalar = {
@@ -1496,9 +1506,10 @@ export namespace Prisma {
     updateAt?: boolean
     provider?: boolean
     providerId?: boolean
+    uniqueId?: boolean
   }
 
-  export type UsersOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"userId" | "username" | "fullname" | "email" | "password" | "verified" | "role" | "profilePicture" | "status" | "createdAt" | "updateAt" | "provider" | "providerId", ExtArgs["result"]["users"]>
+  export type UsersOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"userId" | "username" | "fullname" | "email" | "password" | "verified" | "role" | "profilePicture" | "status" | "createdAt" | "updateAt" | "provider" | "providerId" | "uniqueId", ExtArgs["result"]["users"]>
   export type UsersInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     posts?: boolean | Users$postsArgs<ExtArgs>
     session?: boolean | Users$sessionArgs<ExtArgs>
@@ -1529,6 +1540,7 @@ export namespace Prisma {
       updateAt: Date
       provider: string | null
       providerId: string | null
+      uniqueId: string
     }, ExtArgs["result"]["users"]>
     composites: {}
   }
@@ -1968,6 +1980,7 @@ export namespace Prisma {
     readonly updateAt: FieldRef<"Users", 'DateTime'>
     readonly provider: FieldRef<"Users", 'String'>
     readonly providerId: FieldRef<"Users", 'String'>
+    readonly uniqueId: FieldRef<"Users", 'String'>
   }
     
 
@@ -5642,7 +5655,8 @@ export namespace Prisma {
     createdAt: 'createdAt',
     updateAt: 'updateAt',
     provider: 'provider',
-    providerId: 'providerId'
+    providerId: 'providerId',
+    uniqueId: 'uniqueId'
   };
 
   export type UsersScalarFieldEnum = (typeof UsersScalarFieldEnum)[keyof typeof UsersScalarFieldEnum]
@@ -5821,6 +5835,7 @@ export namespace Prisma {
     updateAt?: DateTimeFilter<"Users"> | Date | string
     provider?: StringNullableFilter<"Users"> | string | null
     providerId?: StringNullableFilter<"Users"> | string | null
+    uniqueId?: StringFilter<"Users"> | string
     posts?: PostsListRelationFilter
     session?: SessionListRelationFilter
     todos?: XOR<TodosNullableScalarRelationFilter, TodosWhereInput> | null
@@ -5840,6 +5855,7 @@ export namespace Prisma {
     updateAt?: SortOrder
     provider?: SortOrderInput | SortOrder
     providerId?: SortOrderInput | SortOrder
+    uniqueId?: SortOrder
     posts?: PostsOrderByRelationAggregateInput
     session?: SessionOrderByRelationAggregateInput
     todos?: TodosOrderByWithRelationInput
@@ -5850,6 +5866,7 @@ export namespace Prisma {
     username?: string
     email?: string
     providerId?: string
+    uniqueId?: string
     AND?: UsersWhereInput | UsersWhereInput[]
     OR?: UsersWhereInput[]
     NOT?: UsersWhereInput | UsersWhereInput[]
@@ -5865,7 +5882,7 @@ export namespace Prisma {
     posts?: PostsListRelationFilter
     session?: SessionListRelationFilter
     todos?: XOR<TodosNullableScalarRelationFilter, TodosWhereInput> | null
-  }, "userId" | "username" | "email" | "providerId">
+  }, "userId" | "username" | "email" | "providerId" | "uniqueId">
 
   export type UsersOrderByWithAggregationInput = {
     userId?: SortOrder
@@ -5881,6 +5898,7 @@ export namespace Prisma {
     updateAt?: SortOrder
     provider?: SortOrderInput | SortOrder
     providerId?: SortOrderInput | SortOrder
+    uniqueId?: SortOrder
     _count?: UsersCountOrderByAggregateInput
     _max?: UsersMaxOrderByAggregateInput
     _min?: UsersMinOrderByAggregateInput
@@ -5903,6 +5921,7 @@ export namespace Prisma {
     updateAt?: DateTimeWithAggregatesFilter<"Users"> | Date | string
     provider?: StringNullableWithAggregatesFilter<"Users"> | string | null
     providerId?: StringNullableWithAggregatesFilter<"Users"> | string | null
+    uniqueId?: StringWithAggregatesFilter<"Users"> | string
   }
 
   export type PostsWhereInput = {
@@ -6084,6 +6103,7 @@ export namespace Prisma {
     updateAt?: Date | string
     provider?: string | null
     providerId?: string | null
+    uniqueId?: string
     posts?: PostsCreateNestedManyWithoutUserInput
     session?: SessionCreateNestedManyWithoutUserInput
     todos?: TodosCreateNestedOneWithoutUserInput
@@ -6103,6 +6123,7 @@ export namespace Prisma {
     updateAt?: Date | string
     provider?: string | null
     providerId?: string | null
+    uniqueId?: string
     posts?: PostsUncheckedCreateNestedManyWithoutUserInput
     session?: SessionUncheckedCreateNestedManyWithoutUserInput
     todos?: TodosUncheckedCreateNestedOneWithoutUserInput
@@ -6122,6 +6143,7 @@ export namespace Prisma {
     updateAt?: DateTimeFieldUpdateOperationsInput | Date | string
     provider?: NullableStringFieldUpdateOperationsInput | string | null
     providerId?: NullableStringFieldUpdateOperationsInput | string | null
+    uniqueId?: StringFieldUpdateOperationsInput | string
     posts?: PostsUpdateManyWithoutUserNestedInput
     session?: SessionUpdateManyWithoutUserNestedInput
     todos?: TodosUpdateOneWithoutUserNestedInput
@@ -6141,6 +6163,7 @@ export namespace Prisma {
     updateAt?: DateTimeFieldUpdateOperationsInput | Date | string
     provider?: NullableStringFieldUpdateOperationsInput | string | null
     providerId?: NullableStringFieldUpdateOperationsInput | string | null
+    uniqueId?: StringFieldUpdateOperationsInput | string
     posts?: PostsUncheckedUpdateManyWithoutUserNestedInput
     session?: SessionUncheckedUpdateManyWithoutUserNestedInput
     todos?: TodosUncheckedUpdateOneWithoutUserNestedInput
@@ -6160,6 +6183,7 @@ export namespace Prisma {
     updateAt?: Date | string
     provider?: string | null
     providerId?: string | null
+    uniqueId?: string
   }
 
   export type UsersUpdateManyMutationInput = {
@@ -6176,6 +6200,7 @@ export namespace Prisma {
     updateAt?: DateTimeFieldUpdateOperationsInput | Date | string
     provider?: NullableStringFieldUpdateOperationsInput | string | null
     providerId?: NullableStringFieldUpdateOperationsInput | string | null
+    uniqueId?: StringFieldUpdateOperationsInput | string
   }
 
   export type UsersUncheckedUpdateManyInput = {
@@ -6192,6 +6217,7 @@ export namespace Prisma {
     updateAt?: DateTimeFieldUpdateOperationsInput | Date | string
     provider?: NullableStringFieldUpdateOperationsInput | string | null
     providerId?: NullableStringFieldUpdateOperationsInput | string | null
+    uniqueId?: StringFieldUpdateOperationsInput | string
   }
 
   export type PostsCreateInput = {
@@ -6463,6 +6489,7 @@ export namespace Prisma {
     updateAt?: SortOrder
     provider?: SortOrder
     providerId?: SortOrder
+    uniqueId?: SortOrder
   }
 
   export type UsersMaxOrderByAggregateInput = {
@@ -6479,6 +6506,7 @@ export namespace Prisma {
     updateAt?: SortOrder
     provider?: SortOrder
     providerId?: SortOrder
+    uniqueId?: SortOrder
   }
 
   export type UsersMinOrderByAggregateInput = {
@@ -6495,6 +6523,7 @@ export namespace Prisma {
     updateAt?: SortOrder
     provider?: SortOrder
     providerId?: SortOrder
+    uniqueId?: SortOrder
   }
 
   export type StringWithAggregatesFilter<$PrismaModel = never> = {
@@ -7186,6 +7215,7 @@ export namespace Prisma {
     updateAt?: Date | string
     provider?: string | null
     providerId?: string | null
+    uniqueId?: string
     session?: SessionCreateNestedManyWithoutUserInput
     todos?: TodosCreateNestedOneWithoutUserInput
   }
@@ -7204,6 +7234,7 @@ export namespace Prisma {
     updateAt?: Date | string
     provider?: string | null
     providerId?: string | null
+    uniqueId?: string
     session?: SessionUncheckedCreateNestedManyWithoutUserInput
     todos?: TodosUncheckedCreateNestedOneWithoutUserInput
   }
@@ -7238,6 +7269,7 @@ export namespace Prisma {
     updateAt?: DateTimeFieldUpdateOperationsInput | Date | string
     provider?: NullableStringFieldUpdateOperationsInput | string | null
     providerId?: NullableStringFieldUpdateOperationsInput | string | null
+    uniqueId?: StringFieldUpdateOperationsInput | string
     session?: SessionUpdateManyWithoutUserNestedInput
     todos?: TodosUpdateOneWithoutUserNestedInput
   }
@@ -7256,6 +7288,7 @@ export namespace Prisma {
     updateAt?: DateTimeFieldUpdateOperationsInput | Date | string
     provider?: NullableStringFieldUpdateOperationsInput | string | null
     providerId?: NullableStringFieldUpdateOperationsInput | string | null
+    uniqueId?: StringFieldUpdateOperationsInput | string
     session?: SessionUncheckedUpdateManyWithoutUserNestedInput
     todos?: TodosUncheckedUpdateOneWithoutUserNestedInput
   }
@@ -7274,6 +7307,7 @@ export namespace Prisma {
     updateAt?: Date | string
     provider?: string | null
     providerId?: string | null
+    uniqueId?: string
     posts?: PostsCreateNestedManyWithoutUserInput
     todos?: TodosCreateNestedOneWithoutUserInput
   }
@@ -7292,6 +7326,7 @@ export namespace Prisma {
     updateAt?: Date | string
     provider?: string | null
     providerId?: string | null
+    uniqueId?: string
     posts?: PostsUncheckedCreateNestedManyWithoutUserInput
     todos?: TodosUncheckedCreateNestedOneWithoutUserInput
   }
@@ -7326,6 +7361,7 @@ export namespace Prisma {
     updateAt?: DateTimeFieldUpdateOperationsInput | Date | string
     provider?: NullableStringFieldUpdateOperationsInput | string | null
     providerId?: NullableStringFieldUpdateOperationsInput | string | null
+    uniqueId?: StringFieldUpdateOperationsInput | string
     posts?: PostsUpdateManyWithoutUserNestedInput
     todos?: TodosUpdateOneWithoutUserNestedInput
   }
@@ -7344,6 +7380,7 @@ export namespace Prisma {
     updateAt?: DateTimeFieldUpdateOperationsInput | Date | string
     provider?: NullableStringFieldUpdateOperationsInput | string | null
     providerId?: NullableStringFieldUpdateOperationsInput | string | null
+    uniqueId?: StringFieldUpdateOperationsInput | string
     posts?: PostsUncheckedUpdateManyWithoutUserNestedInput
     todos?: TodosUncheckedUpdateOneWithoutUserNestedInput
   }
@@ -7362,6 +7399,7 @@ export namespace Prisma {
     updateAt?: Date | string
     provider?: string | null
     providerId?: string | null
+    uniqueId?: string
     posts?: PostsCreateNestedManyWithoutUserInput
     session?: SessionCreateNestedManyWithoutUserInput
   }
@@ -7380,6 +7418,7 @@ export namespace Prisma {
     updateAt?: Date | string
     provider?: string | null
     providerId?: string | null
+    uniqueId?: string
     posts?: PostsUncheckedCreateNestedManyWithoutUserInput
     session?: SessionUncheckedCreateNestedManyWithoutUserInput
   }
@@ -7414,6 +7453,7 @@ export namespace Prisma {
     updateAt?: DateTimeFieldUpdateOperationsInput | Date | string
     provider?: NullableStringFieldUpdateOperationsInput | string | null
     providerId?: NullableStringFieldUpdateOperationsInput | string | null
+    uniqueId?: StringFieldUpdateOperationsInput | string
     posts?: PostsUpdateManyWithoutUserNestedInput
     session?: SessionUpdateManyWithoutUserNestedInput
   }
@@ -7432,6 +7472,7 @@ export namespace Prisma {
     updateAt?: DateTimeFieldUpdateOperationsInput | Date | string
     provider?: NullableStringFieldUpdateOperationsInput | string | null
     providerId?: NullableStringFieldUpdateOperationsInput | string | null
+    uniqueId?: StringFieldUpdateOperationsInput | string
     posts?: PostsUncheckedUpdateManyWithoutUserNestedInput
     session?: SessionUncheckedUpdateManyWithoutUserNestedInput
   }

@@ -32,7 +32,7 @@ model Users {
   posts      Posts[]
   session    Session[]
   todos      Todos?
-
+  uniqueId   String       @unique @default(dbgenerated("'U' || to_char(CURRENT_TIMESTAMP, 'YYMMDDHH24MISS') || substr(md5(random()::text), 1, 3)"))
   @@index([fullname, username, email])
 }
 
@@ -46,7 +46,6 @@ model Posts {
   updateAt  DateTime   @updatedAt
   slug      String     @unique
   user      Users      @relation(fields: [userId], references: [userId], onDelete: Cascade)
-
   @@index([title, content, slug])
 }
 

@@ -1,16 +1,16 @@
 import { builder } from "../../lib/builderSchema";
 import { UsersRole, UserStatus } from "./enum";
-
 export const Users = builder.prismaObject("Users", {
     fields: (t) => ({
         userId: t.exposeString("userId"),
         username: t.exposeString("username"),
         fullname: t.exposeString("fullname"),
+        uniqueId: t.exposeString("uniqueId"),
         profilePicture: t.exposeString("profilePicture"),
         password: t.exposeString("password", {
             authScopes(parent) {
                 return {
-                    isMe: parent,
+                    isPublic: true
                 }
             },
         }),

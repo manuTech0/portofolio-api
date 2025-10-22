@@ -1,6 +1,8 @@
 import slugify from 'slugify';
 import { builder } from "../../lib/builderSchema";
 import prisma from "../../lib/prisma";
+import { changeVisibilitySchema, createPostSchema, deletePostSchema, updatePostSchema } from '../../lib/zodSchema';
+import { ZodError } from 'zod';
 
 export const mutationPosts = builder.mutationType({
     fields: (t) => ({
@@ -10,11 +12,26 @@ export const mutationPosts = builder.mutationType({
                 title: t.arg.string({ required: true }),
                 content: t.arg.string({ required: true })
             },
+            validate: {
+                schema: createPostSchema
+            },
             authScopes: {
                 isLogged: true
             },
-            resolve: async (query, _parent, args, ctx) => 
-                prisma.posts.create({
+            resolve: async (query, _parent, args, ctx) => {
+                const unique = await prisma.posts.findFirst({
+                    where: {
+                        slug: slugify(args.title, {
+                            lower: true,
+                            trim: true
+                        })
+                    }
+                })
+                if(unique) {
+                    throw Error(`title="${args.title}" already exist`)
+                }
+                console.log("proccesing")
+                return prisma.posts.create({
                     ...query,
                     data: {
                         title: args.title,
@@ -27,11 +44,15 @@ export const mutationPosts = builder.mutationType({
                         status: "public"
                     }
                 })
+            }
         }),
         delete: t.prismaField({
             type: ["Posts"],
             args: {
                 postId: t.arg.stringList({ required: true })
+            },
+            validate: {
+                schema: deletePostSchema
             },
             resolve: async (query, _parent, args, ctx) => {
                 const userId = ctx.currentUser?.userId
@@ -59,10 +80,24 @@ export const mutationPosts = builder.mutationType({
                 title: t.arg.string(),
                 content: t.arg.string()
             },
+            validate: {
+                schema: updatePostSchema
+            },
             resolve: async (query, _parent, args, ctx) => {
                 const userId = ctx.currentUser?.userId
                 if(!userId) {
                     throw new Error("Unauthorized for update: "+args.postId );
+                }
+                const unique = await prisma.posts.findFirst({
+                    where: { slug: slugify(args.title!, {
+                                lower: true,
+                                trim: true
+                            })
+                    }
+                        
+                })
+                if(unique) {
+                    throw (Error(`title ${args.title} already exist`) as ZodError)
                 }
                 const update = await prisma.posts.findFirstOrThrow({
                     ...query, 
@@ -78,10 +113,51 @@ export const mutationPosts = builder.mutationType({
                     where: { postId: update.postId },
                     data: {
                         title: args.title ?? update.title,
-                        content: args.content ?? update.content
+                        content: args.content ?? update.content,
+                        slug: slugify(args.title!, {
+                            lower: true,
+                            trim: true
+                        })
                     }
                 })
                 return update
+            }
+        }),
+
+        ChangeVisibility: t.prismaField({
+            type: "Posts",
+            args: {
+                postId: t.arg.string({ required: true })
+            },
+            validate: {
+                schema: changeVisibilitySchema
+            },
+            resolve: async (query, root, args, ctx, info) => {
+                const post = await prisma.posts.findFirst({
+                    ...query,
+                    where: {
+                        postId: args.postId
+                    },
+                    include: {
+                        user: true
+                    }
+                })
+                if(!post) {
+                    throw new Error("Post not defined");
+                    
+                }
+                if(post?.userId != ctx.currentUser?.userId) {
+                    throw Error("Unauthorized change post " + post?.title)
+                }
+                return prisma.posts.update({
+                    ...query,
+                    where: {
+                        postId: args.postId
+                    },
+                    data: {
+                        status: (post?.status == "public") ? "private" : "public"
+                    }
+                })
             }
         })
     })

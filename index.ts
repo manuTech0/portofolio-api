@@ -69,7 +69,11 @@ app.use(cors({
         if (!origin || allowed?.includes(origin)) {
             callback(null, true)
         } else {
-            callback(new Error("Not allowed by CORS"))
+            if(process.env.NODE_ENV == "production") {
+                callback(new Error("Not allowed by CORS"))
+            } else {
+                callback(null, true)
+            }
         }
     },
     credentials: true,
@@ -96,16 +100,26 @@ app.get("/", async (req: Request, res: Response) => {
     const allowedHosts = getAllowedHosts()
     const url = validateRedirectUrl(redirectUrl, allowedHosts)
 
+    const sessionId = lucia.readSessionCookie(req.headers.cookie ?? "")
+    if (sessionId) {
+        if(url) {
+            prisma.session.update({
+                where: {
+                    id: sessionId
+                },
+                data: {
+                    redirectUrl: url.href
+                }
+            })
+        }
+        return res.redirect("/generate-token")
+    }
+
     if (!url) {
         return res.status(403).json({ error: "Invalid redirect url" })
     }
-
-    const sessionId = lucia.readSessionCookie(req.headers.cookie ?? "")
     memoryStore.set("oauth_redirect_url", url.href, 300 * 1000)
 
-    if (sessionId) {
-        return res.redirect("/generate-token")
-    }
 
     return res.sendFile(path.join(__dirname, "public/index.html"))
 })
@@ -120,14 +134,14 @@ app.get("/signup", async (req: Request, res: Response) => {
         return res.status(403).json({ error: "Invalid redirect url" })
     }
 
-    if (memoryStore.get("oauth_redirect_url")) {
-        memoryStore.set("oauth_redirect_url", url.href, 300 * 1000)
-    }
-
     const sessionId = lucia.readSessionCookie(req.headers.cookie ?? "")
     if (sessionId) {
         return res.redirect("/generate-token")
     }
+    if (!memoryStore.get("oauth_redirect_url")) {
+        memoryStore.set("oauth_redirect_url", url.href, 300 * 1000)
+    }
+
 
     return res.sendFile(path.join(__dirname, "public/signup.html"))
 })
@@ -154,7 +168,7 @@ app.get("/generate-token", async (req: Request, res: Response) => {
 
     const redirectUrl = memoryStore.get("oauth_redirect_url") as string | undefined
 
-    const url = new URL(redirectUrl || sessionData.redirectUrl || "https://www.manu-tech.my.id/")
+    const url = new URL(redirectUrl || sessionData.redirectUrl ||  "https://www.manu-tech.my.id/")
 
     const payload: CustomJWTPayload = {
         email: sessionData.user.email,
@@ -170,8 +184,8 @@ app.get("/generate-token", async (req: Request, res: Response) => {
     return res.cookie("token", JSON.stringify(jwtToken), {
         httpOnly: true,
         domain: process.env.NODE_ENV === "production" ? ".manu-tech.my.id" : "localhost",
-        secure: process.env.NODE_ENV === "production",
-        sameSite: "none",
+        ...(process.env.NODE_ENV === "production" && { domain: ".manu-tech.my.id" }),
+        sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
         maxAge: 60 * 60 * 1000
     }).redirect(url.href)
 })

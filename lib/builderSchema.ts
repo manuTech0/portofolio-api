@@ -27,6 +27,7 @@ export const builder = new SchemaBuilder<{
     isSuperUser: boolean;
     isMe: { userId: string };
     isLogged: boolean;
+    isPublic: boolean;
   };
   Scalars: {
     DateTime: { Input: Date; Output: Date };
@@ -40,7 +41,8 @@ export const builder = new SchemaBuilder<{
   },
   zod: {
     validationError(zodError) {
-      return zodError;
+      const errorMessages = zodError.issues.map(e => `${e.path.join('.')}: ${e.message}`);
+      return errorMessages.join("\n");
     },
   },
   scopeAuth: {
@@ -54,7 +56,8 @@ export const builder = new SchemaBuilder<{
       isMe: (parent) => {
         return ctx.currentUser?.userId == parent.userId
       },
-      isLogged: ctx.currentUser != undefined && ctx.currentUser != null
+      isLogged: ctx.currentUser != undefined && ctx.currentUser != null,
+      isPublic: false
     }),
   },
 });
