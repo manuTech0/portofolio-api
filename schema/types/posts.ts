@@ -9,23 +9,12 @@ export const Posts = builder.prismaObject("Posts", {
         user: t.relation("user"),
         slug: t.exposeString("slug"),
         userId: t.exposeString("userId"),
-        status: t.expose("status", {
-            type: PostStatus,
-            authScopes(parent) {
-                return {
-                    isMe: parent,
-                    isAdmin: true
-                }
-            },
-        }),
+        status: t.exposeString("status"),
         createdAt: t.expose("createdAt", { 
             type: "DateTime"
         }),
         updateAt: t.expose("updateAt", { 
-            type: "DateTime",
-            authScopes: {
-                isAdminOrUser: true,
-            }
+            type: "DateTime"
         }),
     })
 })
