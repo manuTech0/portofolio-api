@@ -32,31 +32,31 @@ builder.mutationField("sendMessage", (t) =>
             message: `Rate limit exceeded. Please try again after ${resetDate.toLocaleTimeString()}`,
           };
         } else {
-  
+          //* FIXME: false negative recaptcha
           // Determine reCAPTCHA version
-          const version = args.recaptchaVersion?.toLowerCase() === "v2" ? "v2" : "v3";
+         // const version = args.recaptchaVersion?.toLowerCase() === "v2" ? "v2" : "v3";
           
           // Verify reCAPTCHA
-          let isHuman = false;
-          let recaptchaScore = 0;
+          // let isHuman = false;
+          // let recaptchaScore = 0;
   
-          if (version === "v2") {
-            isHuman = await verifyRecaptchaV2(args.recaptchaToken);
-          } else {
-            const result = await verifyRecaptchaV3(args.recaptchaToken, 0.5);
-            isHuman = result.success;
-            recaptchaScore = result.score;
-          }
+          // if (version === "v2") {
+          //   isHuman = await verifyRecaptchaV2(args.recaptchaToken);
+          // } else {
+          //   const result = await verifyRecaptchaV3(args.recaptchaToken, 0.5);
+          //   isHuman = result.success;
+          //   recaptchaScore = result.score;
+          // }
   
-          if (!isHuman) {
-            return {
-              type: "error",
-              success: false,
-              isBot: true,
-              needVerify: version === "v3", // Suggest v2 if v3 failed
-              message: "Is bot"
-            };
-          }
+          // if (!isHuman) {
+          //   return {
+          //     type: "error",
+          //     success: false,
+          //     isBot: true,
+          //     needVerify: version === "v3", // Suggest v2 if v3 failed
+          //     message: "Is bot"
+          //   };
+          // }
   
           // Validate input
           if (!args.name.trim() || !args.email.trim() || !args.message.trim()) {
