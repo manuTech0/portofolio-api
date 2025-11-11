@@ -6,11 +6,13 @@ export async function loadSchema() {
     await import("./types/users")
     await import("./types/posts")
     await import("./types/todos")
+    await import("./types/messageMe")
     await import("./query/posts")
     await import("./query/myTodos")
     await import("./query/meQuery")
     await import("./mutation/post")
     await import("./mutation/todo")
+    await import("./mutation/messageMe")
     // await import("./mutation/user")
     return builder.toSchema({});
 }

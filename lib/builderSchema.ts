@@ -5,6 +5,7 @@ import PothosZodPlugin from "@pothos/plugin-zod";
 import PothosScopeAuthPlugin from "@pothos/plugin-scope-auth";
 import type PrismaTypes from "./generated/pothos-prisma";
 import type { UsersRoles } from "./generated/prisma";
+import type { Request } from "express";
 
 export interface Context {
     currentUser?: {
@@ -15,7 +16,10 @@ export interface Context {
     errors?: {
         message: string;
         code?: string;
-    }
+    },
+    req: {
+      ip: string;
+    };
 }
 
 export const builder = new SchemaBuilder<{

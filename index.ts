@@ -50,7 +50,7 @@ const yoga = createYoga({
     cors: {
         origin: getAllowedHosts(),
         credentials: true,
-        allowedHeaders: [ "x-csrf-token", "Authorization", "content-type" ],
+        allowedHeaders: [ "x-csrf-token", "Authorization", "content-type", "x-forwarded-for", "x-real-ip", "cf-connecting-ip"],
         methods: ["POST"]
     },
     plugins: [
