@@ -21,6 +21,7 @@ builder.mutationField("sendMessage", (t) =>
 
         // Check rate limit (3 requests per hour per IP)
         const rateLimit = checkRateLimit(ip, 3, 12 * 60 * 60 * 1000);
+        console.table(rateLimit)
         if (!rateLimit.allowed) {
           const resetDate = new Date(rateLimit.resetTime);
           return {
