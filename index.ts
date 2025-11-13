@@ -126,7 +126,7 @@ app.use((req, res, next) => {
                 });
                 
             } catch (e) {
-                console.log('⚠️ Invalid referer URL:', referer, e.message);
+                console.log('⚠️ Invalid referer URL:', referer, (e as { message: string }).message);
                 // Jika referer invalid, block di production
                 if (process.env.NODE_ENV === 'production') {
                     return res.status(403).json({ error: 'Forbidden: Invalid referer' });
