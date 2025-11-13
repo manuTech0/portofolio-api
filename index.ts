@@ -12,6 +12,7 @@ import { lucia } from './lib/lucia';
 import prisma from './lib/prisma';
 import { createContext } from './lib/yogaContext';
 import cors from "cors";
+import morgan from 'morgan';
 
 const app = express()
 
@@ -62,22 +63,78 @@ const yoga = createYoga({
     graphiql: process.env.NODE_ENV !== "production"
 })
 
-app.use(cors({
-    origin(origin, callback) {
-        const allowed = process.env.ALLOWED_HOST?.trim().split(", ")
-        console.log(allowed, origin)
-        if (!origin || allowed?.includes(origin)) {
-            callback(null, true)
-        } else {
-            if(process.env.NODE_ENV == "production") {
-                callback(new Error("Not allowed by CORS"))
-            } else {
-                callback(null, true)
+app.use((req, res, next) => {
+    const allowed = process.env.ALLOWED_HOST
+        ?.split(',')
+        .map(s => s.trim())
+        .filter(Boolean) || [];
+    
+    const origin = req.headers.origin;
+    const host = req.headers.host;
+    const referer = req.headers.referer;
+    
+    console.log('Origin:', origin, 'Host:', host, 'Referer:', referer);
+    
+    // ✅ Handle same-origin requests (undefined origin)
+    if (!origin) {
+        // Verify dari server sendiri via referer
+        if (referer) {
+            try {
+                const refererHost = new URL(referer).host;
+                if (refererHost === host) {
+                    console.log('✅ Allowed: same-origin from referer');
+                    res.setHeader('Access-Control-Allow-Origin', req.protocol + '://' + host);
+                    res.setHeader('Access-Control-Allow-Credentials', 'true');
+                    res.setHeader('Access-Control-Allow-Methods', 'GET,POST,PUT,DELETE,OPTIONS');
+                    res.setHeader('Access-Control-Allow-Headers', 'Content-Type,Authorization');
+                    
+                    if (req.method === 'OPTIONS') {
+                        return res.sendStatus(204);
+                    }
+                    return next();
+                }
+            } catch (e) {
+                console.log('Invalid referer URL:', referer);
             }
         }
-    },
-    credentials: true,
-}))
+        
+        // Development: allow all
+        if (process.env.NODE_ENV !== 'production') {
+            res.setHeader('Access-Control-Allow-Origin', '*');
+            res.setHeader('Access-Control-Allow-Methods', 'GET,POST,PUT,DELETE,OPTIONS');
+            res.setHeader('Access-Control-Allow-Headers', 'Content-Type,Authorization');
+            
+            if (req.method === 'OPTIONS') {
+                return res.sendStatus(204);
+            }
+            return next();
+        }
+        
+        // Production: block undefined origin tanpa referer valid
+        console.log('❌ Blocked: undefined origin');
+        return res.status(403).json({ error: 'Forbidden: Origin required' });
+    }
+    
+    // Handle cross-origin requests
+    const normalizedOrigin = origin.replace(/\/$/, '');
+    const isAllowed = allowed.some(h => h.replace(/\/$/, '') === normalizedOrigin);
+    
+    if (isAllowed || process.env.NODE_ENV !== 'production') {
+        console.log('✅ Allowed:', normalizedOrigin);
+        res.setHeader('Access-Control-Allow-Origin', origin);
+        res.setHeader('Access-Control-Allow-Credentials', 'true');
+        res.setHeader('Access-Control-Allow-Methods', 'GET,POST,PUT,DELETE,OPTIONS');
+        res.setHeader('Access-Control-Allow-Headers', 'Content-Type,Authorization');
+        
+        if (req.method === 'OPTIONS') {
+            return res.sendStatus(204);
+        }
+        return next();
+    }
+    
+    console.log('❌ Blocked:', normalizedOrigin);
+    return res.status(403).json({ error: 'Not allowed by CORS' });
+});
 
 app.use("/graphql", yoga)
 
@@ -189,6 +246,8 @@ app.get("/generate-token", async (req: Request, res: Response) => {
         maxAge: 60 * 60 * 1000
     }).redirect(url.href)
 })
+
+app.use(morgan("combined"))
 
 app.listen(process.env.PORT ?? 4000, (p) => {
     logger.info(`API listening in *:${process.env.PORT ?? 4000}`)
