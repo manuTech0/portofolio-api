@@ -63,24 +63,134 @@ const yoga = createYoga({
     graphiql: process.env.NODE_ENV !== "production"
 })
 
-app.use(cors({
-    origin: (origin, callback) => {
-        const allowed = process.env.ALLOWED_HOST
-            ?.split(',')
-            .map(s => s.trim())
-            .filter(Boolean) || [];
-        if (typeof origin == "undefined") {
-            return callback(null, true);
+app.use((req, res, next) => {
+    const allowed = process.env.ALLOWED_HOST
+        ?.split(',')
+        .map(s => s.trim())
+        .filter(Boolean) || [];
+    
+    const origin = req.headers.origin;
+    const host = req.headers.host;
+    const referer = req.headers.referer;
+    
+    console.log('Origin:', origin, 'Host:', host, 'Referer:', referer);
+    console.log('Allowed hosts:', allowed);
+    
+    // ✅ Handle same-origin requests (undefined origin)
+    if (!origin) {
+        // Cek referer
+        if (referer) {
+            try {
+                const refererUrl = new URL(referer);
+                const refererHost = refererUrl.host;
+                const refererOrigin = `${refererUrl.protocol}//${refererUrl.host}`;
+                
+                console.log('Referer host:', refererHost);
+                console.log('Referer origin:', refererOrigin);
+                
+                // Case 1: Referer dari host yang sama (same-origin)
+                if (refererHost === host) {
+                    console.log('✅ Allowed: same-origin from referer (host match)');
+                    res.setHeader('Access-Control-Allow-Credentials', 'true');
+                    res.setHeader('Access-Control-Allow-Methods', 'GET,POST,PUT,DELETE,OPTIONS');
+                    res.setHeader('Access-Control-Allow-Headers', 'Content-Type,Authorization');
+                    
+                    if (req.method === 'OPTIONS') {
+                        return res.sendStatus(204);
+                    }
+                    return next();
+                }
+                
+                // Case 2: Referer dari whitelist
+                const normalizedRefererOrigin = refererOrigin.replace(/\/$/, '');
+                const isAllowedReferer = allowed.some(h => h.replace(/\/$/, '') === normalizedRefererOrigin);
+                
+                if (isAllowedReferer) {
+                    console.log('✅ Allowed: referer in whitelist:', normalizedRefererOrigin);
+                    res.setHeader('Access-Control-Allow-Origin', refererOrigin);
+                    res.setHeader('Access-Control-Allow-Credentials', 'true');
+                    res.setHeader('Access-Control-Allow-Methods', 'GET,POST,PUT,DELETE,OPTIONS');
+                    res.setHeader('Access-Control-Allow-Headers', 'Content-Type,Authorization');
+                    
+                    if (req.method === 'OPTIONS') {
+                        return res.sendStatus(204);
+                    }
+                    return next();
+                }
+                
+                // Case 3: Referer dari domain lain (bukan whitelist)
+                console.log('❌ Blocked: referer not in whitelist:', normalizedRefererOrigin);
+                return res.status(403).json({ 
+                    error: 'Forbidden: Referer not allowed',
+                    referer: normalizedRefererOrigin 
+                });
+                
+            } catch (e) {
+                console.log('⚠️ Invalid referer URL:', referer, e.message);
+                // Jika referer invalid, block di production
+                if (process.env.NODE_ENV === 'production') {
+                    return res.status(403).json({ error: 'Forbidden: Invalid referer' });
+                }
+            }
         }
         
-        if (allowed.includes(origin)) {
-            callback(null, true);
-        } else {
-            callback(new Error('Not allowed'));
+        // Tidak ada referer
+        if (process.env.NODE_ENV !== 'production') {
+            // Development: allow all tanpa referer
+            console.log('⚠️ Dev mode: allowing undefined origin without referer');
+            res.setHeader('Access-Control-Allow-Origin', '*');
+            res.setHeader('Access-Control-Allow-Methods', 'GET,POST,PUT,DELETE,OPTIONS');
+            res.setHeader('Access-Control-Allow-Headers', 'Content-Type,Authorization');
+            
+            if (req.method === 'OPTIONS') {
+                return res.sendStatus(204);
+            }
+            return next();
         }
-    },
-    credentials: true
-}));
+        
+        // Production: block undefined origin tanpa referer
+        console.log('❌ Blocked: undefined origin without referer');
+        return res.status(403).json({ error: 'Forbidden: Origin or Referer required' });
+    }
+    
+    // Handle cross-origin requests (origin ada)
+    const normalizedOrigin = origin.replace(/\/$/, '');
+    const isAllowed = allowed.some(h => h.replace(/\/$/, '') === normalizedOrigin);
+    
+    if (isAllowed) {
+        console.log('✅ Allowed: origin in whitelist:', normalizedOrigin);
+        res.setHeader('Access-Control-Allow-Origin', origin);
+        res.setHeader('Access-Control-Allow-Credentials', 'true');
+        res.setHeader('Access-Control-Allow-Methods', 'GET,POST,PUT,DELETE,OPTIONS');
+        res.setHeader('Access-Control-Allow-Headers', 'Content-Type,Authorization');
+        
+        if (req.method === 'OPTIONS') {
+            return res.sendStatus(204);
+        }
+        return next();
+    }
+    
+    // Development: allow semua origin
+    if (process.env.NODE_ENV !== 'production') {
+        console.log('⚠️ Dev mode: allowing origin:', normalizedOrigin);
+        res.setHeader('Access-Control-Allow-Origin', origin);
+        res.setHeader('Access-Control-Allow-Credentials', 'true');
+        res.setHeader('Access-Control-Allow-Methods', 'GET,POST,PUT,DELETE,OPTIONS');
+        res.setHeader('Access-Control-Allow-Headers', 'Content-Type,Authorization');
+        
+        if (req.method === 'OPTIONS') {
+            return res.sendStatus(204);
+        }
+        return next();
+    }
+    
+    // Production: block origin tidak di whitelist
+    console.log('❌ Blocked: origin not in whitelist:', normalizedOrigin);
+    return res.status(403).json({ 
+        error: 'Not allowed by CORS',
+        origin: normalizedOrigin 
+    });
+});
 
 app.use("/graphql", yoga)
 
